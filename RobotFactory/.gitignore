@@ -1,0 +1,32 @@
+# Ignore les dossiers de build
+bin/
+obj/
+
+# Ignore les fichiers temporaires
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore les dossiers de cache de Rider ou VS
+.idea/
+.vscode/
+
+# Ignore les fichiers de logs
+*.log
+
+# Ignore les résultats de tests
+TestResults/
+*.coverage
+*.coveragexml
+
+# Ignore les fichiers générés
+*.dbmdl
+*.pdb
+
+# Ignore les fichiers de configuration utilisateur
+*.userprefs
+*.csproj.user
+
+# Ignore les fichiers de package locaux
+packages/
