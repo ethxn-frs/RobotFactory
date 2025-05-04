@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using RobotFactory.Models;
 
 namespace RobotFactory.Services
@@ -30,7 +31,10 @@ namespace RobotFactory.Services
                 { "Legs_LM1", 10 },
                 { "Legs_LD1", 10 },
                 { "Legs_LI1", 10 },
-                { "System_SB1", 20 }
+                { "System_SB1", 20 },
+                { "System_SM1", 20 },
+                { "System_SD1", 20 },
+                { "System_SI1", 20 }
             };
 
             _robotStock = new Dictionary<string, int>
@@ -80,31 +84,60 @@ namespace RobotFactory.Services
 
         public void DisplayNeededPieces(string arguments)
         {
+
             var requestedRobots = ParseArguments(arguments);
+
+            if(requestedRobots.Count < 1) {
+                return;
+            }
+
+            var piecesPerRobots = new Dictionary<string, Dictionary<string, int>>();
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
             {
-                if (!_robotTemplates.ContainsKey(robotName))
+                var robotNameUpper = robotName.ToUpper();
+
+                if (!_robotTemplates.ContainsKey(robotNameUpper))
                 {
                     Console.WriteLine($"ERROR `{robotName}` is not a recognized robot");
                     return;
                 }
 
-                var robot = _robotTemplates[robotName];
+                if (!piecesPerRobots.ContainsKey(robotNameUpper)) {
+                    piecesPerRobots[robotNameUpper] = new Dictionary<string, int>();
+                }
+
+                var robot = _robotTemplates[robotNameUpper];
                 foreach (var piece in robot.RequiredPieces)
                 {
-                    if (!totalPiecesNeeded.ContainsKey(piece))
-                        totalPiecesNeeded[piece] = 0;
-
-                    totalPiecesNeeded[piece] += quantity;
+                    // 1: Adding pieces to robot
+                    if (!piecesPerRobots[robotNameUpper].ContainsKey(piece)) {
+                        piecesPerRobots[robotNameUpper][piece] = quantity;
+                    } else {
+                        piecesPerRobots[robotNameUpper][piece] += quantity;
+                    }
+                    // 2: Adding pieces to total pieces
+                    if(!totalPiecesNeeded.ContainsKey(piece)) {
+                        totalPiecesNeeded[piece] = quantity;
+                    } else {
+                        totalPiecesNeeded[piece] += quantity;
+                    }
+                    
                 }
             }
 
-            Console.WriteLine("Pièces nécessaires :");
-            foreach (var (pieceName, quantity) in totalPiecesNeeded)
-            {
-                Console.WriteLine($"{quantity} {pieceName}");
+            Console.WriteLine("\nPièces nécessaires :");
+
+            foreach (var (robotName, quantityRobot) in requestedRobots) {
+                Console.WriteLine($"{quantityRobot} {robotName} :");
+                foreach(var (pieceName, quantityPiece) in piecesPerRobots[robotName]) {
+                    Console.WriteLine($"{quantityPiece} {pieceName}");
+                }
+            }
+            Console.WriteLine("Total :");
+            foreach(var (pieceName, quantityPiece) in totalPiecesNeeded) {
+                Console.WriteLine($"{quantityPiece} {pieceName}");
             }
         }
 
@@ -230,12 +263,17 @@ namespace RobotFactory.Services
                 return result;
 
             var entries = arguments.Split(',');
+
             foreach (var entry in entries)
             {
                 var parts = entry.Trim().Split(' ', 2);
-                if (parts.Length == 2 && int.TryParse(parts[0], out int quantity))
+                if(parts.Length != 2) {
+                    Console.WriteLine($"ERROR: invalid argument provided ({string.Join(" ", parts)})");
+                    return new Dictionary<string, int>();
+                }
+                if (int.TryParse(parts[0], out int quantity))
                 {
-                    string robotName = parts[1].Trim();
+                    string robotName = parts[1].Trim().ToUpper();
                     if (result.ContainsKey(robotName))
                         result[robotName] += quantity;
                     else

@@ -49,7 +49,7 @@ Where ``ARGS`` can have the following form
 > STOCKS
 ```
 
-- (NOT IMPLEMENTED) Get the list of pieces needed to build (a) robot(s)
+- Get the list of pieces needed to build (a) robot(s)
 ```
 > NEEDED_STOCKS ARGS
 ```
