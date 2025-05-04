@@ -64,7 +64,7 @@ Where ``ARGS`` can have the following form
 > VERIFY ARGS
 ```
 
-- (IMPLEMENTATION TO FIX) Produce (a) robot(s)
+- Produce (a) robot(s)
 ```
 > PRODUCE ARGS
 ```
