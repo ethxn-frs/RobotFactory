@@ -54,7 +54,7 @@ Where ``ARGS`` can have the following form
 > NEEDED_STOCKS ARGS
 ```
 
-- (NOT IMPLEMENTED) Get the list of instructions needed to build (a) robot(s)
+- Get the list of instructions needed to build (a) robot(s)
 ```
 > INSTRUCTIONS ARGS
 ```

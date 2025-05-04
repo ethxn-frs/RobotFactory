@@ -160,12 +160,24 @@ namespace RobotFactory.Services
                         if (piece.StartsWith("System_"))
                         {
                             Console.WriteLine(
-                                $"INSTALL {piece} Core_{robot.Name.Substring(0, 2)}1");
+                                $"INSTALL {piece} {robot.RequiredPieces[0]}");
                         }
                         else
                         {
                             Console.WriteLine($"GET_OUT_STOCK 1 {piece}");
                         }
+                    }
+
+                    var currentPiece = robot.RequiredPieces[0];
+                    var pieceToAssemble = robot.RequiredPieces[1];
+                    var assemblyName = "TMP1";
+
+                    for(int indexPiece=2; indexPiece<robot.RequiredPieces.Count; indexPiece++) {
+
+                        Console.WriteLine($"ASSEMBLE {assemblyName} {currentPiece} {pieceToAssemble}");
+                        assemblyName = $"TMP{indexPiece}";
+                        currentPiece = $"TMP{indexPiece-1}";
+                        pieceToAssemble = robot.RequiredPieces[indexPiece];
                     }
 
                     Console.WriteLine($"FINISHED {robot.Name}");
