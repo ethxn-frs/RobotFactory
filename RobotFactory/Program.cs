@@ -24,6 +24,10 @@ namespace RobotFactory
                 string arguments = input.Length > command.Length ? input.Substring(command.Length).Trim() : "";
                 var parsedArguments = Parser.ParseArguments(arguments);
 
+                if(parsedArguments.Count == 0) {
+                    continue;
+                }
+
                 switch (command.ToUpper())
                 {
                     case "STOCKS":

@@ -59,7 +59,7 @@ Where ``ARGS`` can have the following form
 > INSTRUCTIONS ARGS
 ```
 
-- (IMPLEMENTATION TO FIX) Verify the validity of an order
+- Verify the validity of an order
 ```
 > VERIFY ARGS
 ```
