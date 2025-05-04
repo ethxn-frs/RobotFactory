@@ -82,10 +82,8 @@ namespace RobotFactory.Services
             }
         }
 
-        public void DisplayNeededPieces(string arguments)
+        public void DisplayNeededPieces(Dictionary<string, int> requestedRobots)
         {
-
-            var requestedRobots = ParseArguments(arguments);
 
             if(requestedRobots.Count < 1) {
                 return;
@@ -141,9 +139,8 @@ namespace RobotFactory.Services
             }
         }
 
-        public void DisplayInstructions(string arguments)
+        public void DisplayInstructions(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
 
             foreach (var (robotName, quantity) in requestedRobots)
             {
@@ -176,9 +173,8 @@ namespace RobotFactory.Services
             }
         }
 
-        public void VerifyOrder(string arguments)
+        public void VerifyOrder(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
@@ -211,9 +207,8 @@ namespace RobotFactory.Services
             Console.WriteLine("AVAILABLE");
         }
 
-        public void Produce(string arguments)
+        public void Produce(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
@@ -254,34 +249,6 @@ namespace RobotFactory.Services
             }
 
             Console.WriteLine("STOCK_UPDATED");
-        }
-
-        private Dictionary<string, int> ParseArguments(string arguments)
-        {
-            var result = new Dictionary<string, int>();
-            if (string.IsNullOrWhiteSpace(arguments))
-                return result;
-
-            var entries = arguments.Split(',');
-
-            foreach (var entry in entries)
-            {
-                var parts = entry.Trim().Split(' ', 2);
-                if(parts.Length != 2) {
-                    Console.WriteLine($"ERROR: invalid argument provided ({string.Join(" ", parts)})");
-                    return new Dictionary<string, int>();
-                }
-                if (int.TryParse(parts[0], out int quantity))
-                {
-                    string robotName = parts[1].Trim().ToUpper();
-                    if (result.ContainsKey(robotName))
-                        result[robotName] += quantity;
-                    else
-                        result[robotName] = quantity;
-                }
-            }
-
-            return result;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RobotFactory.Services;
+using RobotFactory.Utils;
 
 namespace RobotFactory
 {
@@ -21,6 +22,7 @@ namespace RobotFactory
 
                 string command = input.Split(' ')[0];
                 string arguments = input.Length > command.Length ? input.Substring(command.Length).Trim() : "";
+                var parsedArguments = Parser.ParseArguments(arguments);
 
                 switch (command.ToUpper())
                 {
@@ -28,16 +30,16 @@ namespace RobotFactory
                         stockManager.DisplayStocks();
                         break;
                     case "NEEDED_STOCKS":
-                        stockManager.DisplayNeededPieces(arguments);
+                        stockManager.DisplayNeededPieces(parsedArguments);
                         break;
                     case "INSTRUCTIONS":
-                        stockManager.DisplayInstructions(arguments);
+                        stockManager.DisplayInstructions(parsedArguments);
                         break;
                     case "VERIFY":
-                        stockManager.VerifyOrder(arguments);
+                        stockManager.VerifyOrder(parsedArguments);
                         break;
                     case "PRODUCE":
-                        stockManager.Produce(arguments);
+                        stockManager.Produce(parsedArguments);
                         break;
                     default:
                         Console.WriteLine("Commande inconnue !");
