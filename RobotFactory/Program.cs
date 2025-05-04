@@ -20,15 +20,15 @@ namespace RobotFactory
                 if (string.IsNullOrWhiteSpace(input))
                     continue;
 
-                string command = input.Split(' ')[0];
+                string command = input.Split(' ')[0].ToUpper();
                 string arguments = input.Length > command.Length ? input.Substring(command.Length).Trim() : "";
                 var parsedArguments = Parser.ParseArguments(arguments);
 
-                if(parsedArguments.Count == 0) {
+                if(parsedArguments.Count == 0 && command != "STOCKS") {
                     continue;
                 }
 
-                switch (command.ToUpper())
+                switch (command)
                 {
                     case "STOCKS":
                         stockManager.DisplayStocks();
