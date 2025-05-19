@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RobotFactoryTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6cc3892b02c9cf537c39933142c13f63ac492f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0afc17a944971f2a35b2338a38443b7e63f5b5e8")]
 [assembly: System.Reflection.AssemblyProductAttribute("RobotFactoryTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RobotFactoryTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,10 +2,10 @@
 {
     public interface IStockManager
     {
-        void DisplayInstructions(string arguments);
-        void DisplayNeededPieces(string arguments);
+        void DisplayInstructions(Dictionary<string, int> requestedRobots);
+        void DisplayNeededPieces(Dictionary<string, int> requestedRobots);
         void DisplayStocks();
-        void Produce(string arguments);
-        void VerifyOrder(string arguments);
+        void Produce(Dictionary<string, int> requestedRobots);
+        void VerifyOrder(Dictionary<string, int> requestedRobots);
     }
 }

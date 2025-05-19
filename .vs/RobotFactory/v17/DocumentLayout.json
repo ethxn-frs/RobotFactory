@@ -7,16 +7,20 @@
       "RelativeMoniker": "D:0:0:{1373D6B3-08CD-403E-88C8-B3C2E6E990A0}|RobotFactoryTests\\RobotFactoryTests.csproj|solutionrelative:robotfactorytests\\services\\stockmanagertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\services\\istockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\services\\istockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\utils\\utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\utils\\utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\services\\stockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\services\\stockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\services\\istockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|solutionrelative:robotfactory\\services\\istockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2B59DF7-F6F6-4B8A-AD7E-445B9D37CDAF}|RobotFactory\\RobotFactory.csproj|c:\\users\\aureb\\robotfactory\\robotfactory\\builder\\robotassemblybuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,11 +46,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "Utils.cs",
+              "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Utils\\Utils.cs",
+              "RelativeDocumentMoniker": "RobotFactory\\Utils\\Utils.cs",
+              "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Utils\\Utils.cs",
+              "RelativeToolTip": "RobotFactory\\Utils\\Utils.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-19T08:55:10.076Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "IStockManager.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Services\\IStockManager.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Services\\IStockManager.cs",
@@ -54,7 +71,8 @@
               "RelativeToolTip": "RobotFactory\\Services\\IStockManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-16T15:34:20.961Z"
+              "WhenOpened": "2025-05-16T15:34:20.961Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -64,26 +82,14 @@
               "RelativeDocumentMoniker": "RobotFactoryTests\\Services\\StockManagerTests.cs",
               "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactoryTests\\Services\\StockManagerTests.cs",
               "RelativeToolTip": "RobotFactoryTests\\Services\\StockManagerTests.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAcwD8AAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAAmwEIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-16T14:42:27.944Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "MSTestSettings.cs",
-              "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactoryTests\\MSTestSettings.cs",
-              "RelativeDocumentMoniker": "RobotFactoryTests\\MSTestSettings.cs",
-              "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactoryTests\\MSTestSettings.cs",
-              "RelativeToolTip": "RobotFactoryTests\\MSTestSettings.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-16T14:40:59.538Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "RobotAssemblyBuilder.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Builder\\RobotAssemblyBuilder.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Builder\\RobotAssemblyBuilder.cs",
@@ -95,7 +101,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Factory.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Factory\\Factory.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Factory\\Factory.cs",
@@ -107,7 +113,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Robot.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Models\\Robot.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Models\\Robot.cs",
@@ -119,27 +125,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "StockManager.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Services\\StockManager.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Services\\StockManager.cs",
               "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Services\\StockManager.cs",
               "RelativeToolTip": "RobotFactory\\Services\\StockManager.cs",
-              "ViewState": "AgIAANQAAAAAAAAAAAAgwPoAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwDIAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-16T13:41:50.491Z"
+              "WhenOpened": "2025-05-16T13:41:50.491Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Program.cs",
               "RelativeDocumentMoniker": "RobotFactory\\Program.cs",
               "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactory\\Program.cs",
               "RelativeToolTip": "RobotFactory\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-16T13:41:30.158Z"
+              "WhenOpened": "2025-05-16T13:41:30.158Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MSTestSettings.cs",
+              "DocumentMoniker": "C:\\Users\\aureb\\RobotFactory\\RobotFactoryTests\\MSTestSettings.cs",
+              "RelativeDocumentMoniker": "RobotFactoryTests\\MSTestSettings.cs",
+              "ToolTip": "C:\\Users\\aureb\\RobotFactory\\RobotFactoryTests\\MSTestSettings.cs",
+              "RelativeToolTip": "RobotFactoryTests\\MSTestSettings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-16T14:40:59.538Z"
             }
           ]
         }

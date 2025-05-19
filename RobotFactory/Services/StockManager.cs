@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using RobotFactory.Models;
 using RobotFactory.Builder;
 
@@ -34,28 +33,11 @@ namespace RobotFactory.Services
         {
             _pieceStock = new Dictionary<string, int>
             {
-
                 { "Core_CM1", 10 }, { "Core_CD1", 10 }, { "Core_CI1", 10 },
                 { "Generator_GM1", 10 }, { "Generator_GD1", 10 }, { "Generator_GI1", 10 },
                 { "Arms_AM1", 10 }, { "Arms_AD1", 10 }, { "Arms_AI1", 10 },
                 { "Legs_LM1", 10 }, { "Legs_LD1", 10 }, { "Legs_LI1", 10 },
-                { "System_SB1", 20 },
-                { "Core_CM1", 10 },
-                { "Core_CD1", 10 },
-                { "Core_CI1", 10 },
-                { "Generator_GM1", 10 },
-                { "Generator_GD1", 10 },
-                { "Generator_GI1", 10 },
-                { "Arms_AM1", 10 },
-                { "Arms_AD1", 10 },
-                { "Arms_AI1", 10 },
-                { "Legs_LM1", 10 },
-                { "Legs_LD1", 10 },
-                { "Legs_LI1", 10 },
-                { "System_SB1", 20 },
-                { "System_SM1", 20 },
-                { "System_SD1", 20 },
-                { "System_SI1", 20 }
+                { "System_SB1", 20 }, { "System_SM1", 20 }, { "System_SD1", 20 }, { "System_SI1", 20 }
             };
 
             _robotStock = new Dictionary<string, int>
@@ -88,10 +70,7 @@ namespace RobotFactory.Services
 
         public void DisplayNeededPieces(Dictionary<string, int> requestedRobots)
         {
-
-            if(requestedRobots.Count < 1) {
-                return;
-            }
+            if (requestedRobots.Count < 1) return;
 
             var piecesPerRobots = new Dictionary<string, Dictionary<string, int>>();
             var totalPiecesNeeded = new Dictionary<string, int>();
@@ -106,50 +85,44 @@ namespace RobotFactory.Services
                     return;
                 }
 
-                if (!piecesPerRobots.ContainsKey(robotNameUpper)) {
+                if (!piecesPerRobots.ContainsKey(robotNameUpper))
                     piecesPerRobots[robotNameUpper] = new Dictionary<string, int>();
-                }
 
                 var robot = _robotTemplates[robotNameUpper];
                 foreach (var piece in robot.RequiredPieces)
                 {
-                    // 1: Adding pieces to robot
-                    if (!piecesPerRobots[robotNameUpper].ContainsKey(piece)) {
+                    if (!piecesPerRobots[robotNameUpper].ContainsKey(piece))
                         piecesPerRobots[robotNameUpper][piece] = quantity;
-                    } else {
+                    else
                         piecesPerRobots[robotNameUpper][piece] += quantity;
-                    }
-                    // 2: Adding pieces to total pieces
-                    if(!totalPiecesNeeded.ContainsKey(piece)) {
+
+                    if (!totalPiecesNeeded.ContainsKey(piece))
                         totalPiecesNeeded[piece] = quantity;
-                    } else {
+                    else
                         totalPiecesNeeded[piece] += quantity;
-                    }
-                    
                 }
             }
 
             Console.WriteLine("Pièces nécessaires :");
             foreach (var (pieceName, quantity) in totalPiecesNeeded)
                 Console.WriteLine($"{quantity} {pieceName}");
-                
-            Console.WriteLine("\nPièces nécessaires :");
 
-            foreach (var (robotName, quantityRobot) in requestedRobots) {
+            Console.WriteLine("\nDétail par robot :");
+            foreach (var (robotName, quantityRobot) in requestedRobots)
+            {
+                var upperName = robotName.ToUpper();
                 Console.WriteLine($"{quantityRobot} {robotName} :");
-                foreach(var (pieceName, quantityPiece) in piecesPerRobots[robotName]) {
+                foreach (var (pieceName, quantityPiece) in piecesPerRobots[upperName])
                     Console.WriteLine($"{quantityPiece} {pieceName}");
-                }
             }
+
             Console.WriteLine("Total :");
-            foreach(var (pieceName, quantityPiece) in totalPiecesNeeded) {
+            foreach (var (pieceName, quantityPiece) in totalPiecesNeeded)
                 Console.WriteLine($"{quantityPiece} {pieceName}");
-            }
         }
 
         public void DisplayInstructions(Dictionary<string, int> requestedRobots)
         {
-
             foreach (var (robotName, quantity) in requestedRobots)
             {
                 if (!_robotTemplates.ContainsKey(robotName))
@@ -164,11 +137,7 @@ namespace RobotFactory.Services
                     var builder = new RobotAssemblyBuilder();
                     builder.Start(robot.Name);
 
-                    string? core = null;
-                    string? generator = null;
-                    string? arms = null;
-                    string? legs = null;
-                    string? system = null;
+                    string? core = null, generator = null, arms = null, legs = null, system = null;
 
                     foreach (var piece in robot.RequiredPieces)
                     {
@@ -180,45 +149,14 @@ namespace RobotFactory.Services
                         else if (piece.StartsWith("System_")) system = piece;
                     }
 
-                    if (core != null && system != null)
-                        builder.AddInstall(system, core);
-
-                    if (core != null && generator != null)
-                        builder.AddAssemble(core, generator);
-
-                    if (arms != null)
-                        builder.AddAssemble(arms);
-
-                    if (legs != null)
-                        builder.AddAssemble(legs);
+                    if (core != null && system != null) builder.AddInstall(system, core);
+                    if (core != null && generator != null) builder.AddAssemble(core, generator);
+                    if (arms != null) builder.AddAssemble(arms);
+                    if (legs != null) builder.AddAssemble(legs);
 
                     builder.Finish(robot.Name);
                     foreach (var instruction in builder.Build())
                         Console.WriteLine(instruction);
-                        if (piece.StartsWith("System_"))
-                        {
-                            Console.WriteLine(
-                                $"INSTALL {piece} {robot.RequiredPieces[0]}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"GET_OUT_STOCK 1 {piece}");
-                        }
-                    }
-
-                    var currentPiece = robot.RequiredPieces[0];
-                    var pieceToAssemble = robot.RequiredPieces[1];
-                    var assemblyName = "TMP1";
-
-                    for(int indexPiece=2; indexPiece<robot.RequiredPieces.Count; indexPiece++) {
-
-                        Console.WriteLine($"ASSEMBLE {assemblyName} {currentPiece} {pieceToAssemble}");
-                        assemblyName = $"TMP{indexPiece}";
-                        currentPiece = $"TMP{indexPiece-1}";
-                        pieceToAssemble = robot.RequiredPieces[indexPiece];
-                    }
-
-                    Console.WriteLine($"FINISHED {robot.Name}");
                 }
             }
         }
