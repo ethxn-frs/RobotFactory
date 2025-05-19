@@ -3,11 +3,12 @@ using RobotFactory.Utils;
 
 namespace RobotFactory
 {
+
     internal class Program
     {
         static void Main(string[] args)
         {
-            var stockManager = new StockManager();
+            IStockManager stockManager = StockManager.Instance;
 
             Console.WriteLine("Bienvenue dans RobotFactory !");
             Console.WriteLine("Entrez vos commandes (STOCKS, NEEDED_STOCKS, INSTRUCTIONS, VERIFY, PRODUCE)");

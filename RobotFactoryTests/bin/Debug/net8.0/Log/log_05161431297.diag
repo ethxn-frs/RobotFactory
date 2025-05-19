@@ -1,0 +1,16 @@
+2025-05-16T14:56:31.3010324+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 1.4.3+c252b64ad913ea9411fc5d17bfd5580d2d061497
+2025-05-16T14:56:31.3170009+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2025-05-16T14:56:31.3179406+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2025-05-16T14:56:31.3179471+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 14:56:31.280
+2025-05-16T14:56:31.3202522+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 32540
+2025-05-16T14:56:31.3205084+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 8.0.15
+2025-05-16T14:56:31.3205244+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.15\System.Private.CoreLib.dll
+2025-05-16T14:56:31.3205353+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2025-05-16T14:56:31.3205421+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\Users\aureb\RobotFactory\RobotFactoryTests\bin\Debug\net8.0\RobotFactoryTests.dll
+2025-05-16T14:56:31.3207362+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\Users\aureb\RobotFactory\RobotFactoryTests\bin\Debug\net8.0\Log --results-directory C:\Users\aureb\RobotFactory\TestResults --client-port 54721'
+2025-05-16T14:56:31.3221859+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2025-05-16T14:56:31.3406004+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2025-05-16T14:56:31.3430206+00:00 Microsoft.Testing.Platform.Configurations.JsonConfigurationSource+JsonConfigurationProvider INFORMATION Config file 'C:\Users\aureb\RobotFactory\RobotFactoryTests\bin\Debug\net8.0\RobotFactoryTests.testconfig.json' not found.
+2025-05-16T14:56:31.3438408+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable:  VSTest mode: False
+2025-05-16T14:56:31.4635109+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: 'MSTestExtension' Version: '3.6.4' DisplayName: 'MSTest' Description: 'MSTest Framework for Microsoft Testing Platform'
+2025-05-16T14:56:31.4752238+00:00 Microsoft.Testing.Extensions.VSTestBridge.ObjectModel.MessageLoggerAdapter WARNING Les attributs Runsettings « MaxCpuCount » ne sont pas pris en charge par Microsoft.Testing.Platform et seront ignorés
