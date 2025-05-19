@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using RobotFactory.Models;
 using RobotFactory.Builder;
 
@@ -33,11 +34,28 @@ namespace RobotFactory.Services
         {
             _pieceStock = new Dictionary<string, int>
             {
+
                 { "Core_CM1", 10 }, { "Core_CD1", 10 }, { "Core_CI1", 10 },
                 { "Generator_GM1", 10 }, { "Generator_GD1", 10 }, { "Generator_GI1", 10 },
                 { "Arms_AM1", 10 }, { "Arms_AD1", 10 }, { "Arms_AI1", 10 },
                 { "Legs_LM1", 10 }, { "Legs_LD1", 10 }, { "Legs_LI1", 10 },
-                { "System_SB1", 20 }
+                { "System_SB1", 20 },
+                { "Core_CM1", 10 },
+                { "Core_CD1", 10 },
+                { "Core_CI1", 10 },
+                { "Generator_GM1", 10 },
+                { "Generator_GD1", 10 },
+                { "Generator_GI1", 10 },
+                { "Arms_AM1", 10 },
+                { "Arms_AD1", 10 },
+                { "Arms_AI1", 10 },
+                { "Legs_LM1", 10 },
+                { "Legs_LD1", 10 },
+                { "Legs_LI1", 10 },
+                { "System_SB1", 20 },
+                { "System_SM1", 20 },
+                { "System_SD1", 20 },
+                { "System_SI1", 20 }
             };
 
             _robotStock = new Dictionary<string, int>
@@ -68,37 +86,69 @@ namespace RobotFactory.Services
                 Console.WriteLine($"{piece.Value} {piece.Key}");
         }
 
-        public void DisplayNeededPieces(string arguments)
+        public void DisplayNeededPieces(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
+
+            if(requestedRobots.Count < 1) {
+                return;
+            }
+
+            var piecesPerRobots = new Dictionary<string, Dictionary<string, int>>();
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
             {
-                if (!_robotTemplates.ContainsKey(robotName))
+                var robotNameUpper = robotName.ToUpper();
+
+                if (!_robotTemplates.ContainsKey(robotNameUpper))
                 {
                     Console.WriteLine($"ERROR `{robotName}` is not a recognized robot");
                     return;
                 }
 
-                var robot = _robotTemplates[robotName];
+                if (!piecesPerRobots.ContainsKey(robotNameUpper)) {
+                    piecesPerRobots[robotNameUpper] = new Dictionary<string, int>();
+                }
+
+                var robot = _robotTemplates[robotNameUpper];
                 foreach (var piece in robot.RequiredPieces)
                 {
-                    if (!totalPiecesNeeded.ContainsKey(piece))
-                        totalPiecesNeeded[piece] = 0;
-
-                    totalPiecesNeeded[piece] += quantity;
+                    // 1: Adding pieces to robot
+                    if (!piecesPerRobots[robotNameUpper].ContainsKey(piece)) {
+                        piecesPerRobots[robotNameUpper][piece] = quantity;
+                    } else {
+                        piecesPerRobots[robotNameUpper][piece] += quantity;
+                    }
+                    // 2: Adding pieces to total pieces
+                    if(!totalPiecesNeeded.ContainsKey(piece)) {
+                        totalPiecesNeeded[piece] = quantity;
+                    } else {
+                        totalPiecesNeeded[piece] += quantity;
+                    }
+                    
                 }
             }
 
             Console.WriteLine("Pièces nécessaires :");
             foreach (var (pieceName, quantity) in totalPiecesNeeded)
                 Console.WriteLine($"{quantity} {pieceName}");
+                
+            Console.WriteLine("\nPièces nécessaires :");
+
+            foreach (var (robotName, quantityRobot) in requestedRobots) {
+                Console.WriteLine($"{quantityRobot} {robotName} :");
+                foreach(var (pieceName, quantityPiece) in piecesPerRobots[robotName]) {
+                    Console.WriteLine($"{quantityPiece} {pieceName}");
+                }
+            }
+            Console.WriteLine("Total :");
+            foreach(var (pieceName, quantityPiece) in totalPiecesNeeded) {
+                Console.WriteLine($"{quantityPiece} {pieceName}");
+            }
         }
 
-        public void DisplayInstructions(string arguments)
+        public void DisplayInstructions(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
 
             foreach (var (robotName, quantity) in requestedRobots)
             {
@@ -145,13 +195,36 @@ namespace RobotFactory.Services
                     builder.Finish(robot.Name);
                     foreach (var instruction in builder.Build())
                         Console.WriteLine(instruction);
+                        if (piece.StartsWith("System_"))
+                        {
+                            Console.WriteLine(
+                                $"INSTALL {piece} {robot.RequiredPieces[0]}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"GET_OUT_STOCK 1 {piece}");
+                        }
+                    }
+
+                    var currentPiece = robot.RequiredPieces[0];
+                    var pieceToAssemble = robot.RequiredPieces[1];
+                    var assemblyName = "TMP1";
+
+                    for(int indexPiece=2; indexPiece<robot.RequiredPieces.Count; indexPiece++) {
+
+                        Console.WriteLine($"ASSEMBLE {assemblyName} {currentPiece} {pieceToAssemble}");
+                        assemblyName = $"TMP{indexPiece}";
+                        currentPiece = $"TMP{indexPiece-1}";
+                        pieceToAssemble = robot.RequiredPieces[indexPiece];
+                    }
+
+                    Console.WriteLine($"FINISHED {robot.Name}");
                 }
             }
         }
 
-        public void VerifyOrder(string arguments)
+        public void VerifyOrder(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
@@ -184,9 +257,8 @@ namespace RobotFactory.Services
             Console.WriteLine("AVAILABLE");
         }
 
-        public void Produce(string arguments)
+        public void Produce(Dictionary<string, int> requestedRobots)
         {
-            var requestedRobots = ParseArguments(arguments);
             var totalPiecesNeeded = new Dictionary<string, int>();
 
             foreach (var (robotName, quantity) in requestedRobots)
@@ -223,29 +295,6 @@ namespace RobotFactory.Services
                 _robotStock[robotName] += quantity;
 
             Console.WriteLine("STOCK_UPDATED");
-        }
-
-        private Dictionary<string, int> ParseArguments(string arguments)
-        {
-            var result = new Dictionary<string, int>();
-            if (string.IsNullOrWhiteSpace(arguments))
-                return result;
-
-            var entries = arguments.Split(',');
-            foreach (var entry in entries)
-            {
-                var parts = entry.Trim().Split(' ', 2);
-                if (parts.Length == 2 && int.TryParse(parts[0], out int quantity))
-                {
-                    string robotName = parts[1].Trim();
-                    if (result.ContainsKey(robotName))
-                        result[robotName] += quantity;
-                    else
-                        result[robotName] = quantity;
-                }
-            }
-
-            return result;
         }
     }
 }
