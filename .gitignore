@@ -1,0 +1,18 @@
+# Fichiers Visual Studio à ignorer
+.vs/
+*.user
+*.suo
+
+# JetBrains Rider / IntelliJ / .idea
+.idea/
+*.iml
+
+# Binaires
+bin/
+obj/
+
+# Fichiers système
+*.log
+*.vsidx
+*.tmp
+*.cache
