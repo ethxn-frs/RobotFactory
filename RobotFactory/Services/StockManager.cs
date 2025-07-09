@@ -1,5 +1,6 @@
 using RobotFactory.Builder;
 using RobotFactory.Models;
+using RobotFactory.Services.Impl;
 
 namespace RobotFactory.Services
 {
@@ -252,6 +253,26 @@ namespace RobotFactory.Services
                         Console.WriteLine(instruction);
                 }
             }
+        }
+
+        public bool IsAvailable(Dictionary<string, int> needed)
+        {
+            foreach (var (piece, qty) in needed)
+                if (!_pieceStock.ContainsKey(piece) || _pieceStock[piece] < qty)
+                    return false;
+            return true;
+        }
+
+        public void Consume(Dictionary<string, int> needed)
+        {
+            foreach (var (piece, qty) in needed)
+                _pieceStock[piece] -= qty;
+        }
+
+        public void AddRobots(string name, int qty)
+        {
+            if (_robotStock.ContainsKey(name)) _robotStock[name] += qty;
+            else _robotStock[name] = qty;
         }
 
         public void VerifyOrder(List<ParsedRobotOrder> robotOrders)

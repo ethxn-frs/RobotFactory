@@ -1,6 +1,7 @@
 ﻿using Moq;
 using RobotFactory.Models;
 using RobotFactory.Services;
+using RobotFactory.Services.Impl;
 
 namespace RobotFactoryTests.Services
 {

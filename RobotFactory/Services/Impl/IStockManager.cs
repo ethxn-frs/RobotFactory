@@ -1,6 +1,6 @@
 ﻿using RobotFactory.Models;
 
-namespace RobotFactory.Services
+namespace RobotFactory.Services.Impl
 {
     public interface IStockManager
     {
@@ -9,5 +9,9 @@ namespace RobotFactory.Services
         void DisplayStocks();
         void Produce(List<ParsedRobotOrder> robotOrders);
         void VerifyOrder(List<ParsedRobotOrder> robotOrders);
+        bool IsAvailable(Dictionary<string, int> needed);
+        void Consume(Dictionary<string, int> needed);
+        void AddRobots(string robotName, int qty);
+
     }
 }
