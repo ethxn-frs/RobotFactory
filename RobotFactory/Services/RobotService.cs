@@ -1,4 +1,5 @@
 using RobotFactory.Models;
+using RobotFactory.Models.Decorators;
 using RobotFactory.Services.Impl;
 
 namespace RobotFactory.Services
@@ -39,22 +40,19 @@ namespace RobotFactory.Services
         public List<string> GetModifiedPieces(ParsedRobotOrder order)
         {
             var baseRobot = GetBaseRobot(order.RobotName);
-            var pieces = new List<string>(baseRobot.RequiredPieces);
+            IRobot robot = new BasicRobotWrapper(baseRobot);
 
-            foreach (var (qty, piece) in order.WithoutPieces)
-                for (int i = 0; i < qty; i++)
-                    pieces.Remove(piece);
+            if (order.WithoutPieces.Any())
+                robot = new WithoutPiecesDecorator(robot, order.WithoutPieces.Select(x => x.Piece).ToList());
 
-            foreach (var (qty, from, to) in order.ReplacePieces)
-                for (int i = 0; i < qty; i++)
-                    if (pieces.Remove(from))
-                        pieces.Add(to);
+            if (order.ReplacePieces.Any())
+                robot = new ReplacePiecesDecorator(robot,
+                    order.ReplacePieces.Select(x => (x.FromPiece, x.ToPiece)).ToList());
 
-            foreach (var (qty, piece) in order.WithPieces)
-                for (int i = 0; i < qty; i++)
-                    pieces.Add(piece);
+            if (order.WithPieces.Any())
+                robot = new WithPiecesDecorator(robot, order.WithPieces.Select(x => x.Piece).ToList());
 
-            return pieces;
+            return robot.GetPieces();
         }
 
         public bool ValidateCategories(Robot robot, List<string> pieces, out string error)
