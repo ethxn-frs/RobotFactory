@@ -8,8 +8,8 @@ namespace RobotFactory
     {
         static void Main(string[] args)
         {
-            IStockManager stockManager = StockManager.Instance;
             IRobotService robotService = new RobotService();
+            IStockManager stockManager = new StockManager(robotService);
             IInstructionService instructionService = new InstructionService();
             IOrderService orderService = new OrderService(robotService, instructionService, stockManager);
 
