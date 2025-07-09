@@ -1,10 +1,10 @@
-using RobotFactory.Models;
 using System.Text.RegularExpressions;
+using RobotFactory.Models;
 
-namespace RobotFactory.Utils {
-
-    public static class Parser {
-
+namespace RobotFactory.Utils
+{
+    public static class Parser
+    {
         public static Dictionary<string, int> ParseArguments(string arguments)
         {
             var result = new Dictionary<string, int>();
@@ -16,10 +16,12 @@ namespace RobotFactory.Utils {
             foreach (var entry in entries)
             {
                 var parts = entry.Trim().Split(' ', 2);
-                if(parts.Length != 2) {
+                if (parts.Length != 2)
+                {
                     Console.WriteLine($"ERROR: invalid argument provided ({string.Join(" ", parts)})");
                     return new Dictionary<string, int>();
                 }
+
                 if (int.TryParse(parts[0], out int quantity))
                 {
                     string robotName = parts[1].Trim().ToUpper();
@@ -45,7 +47,7 @@ namespace RobotFactory.Utils {
             {
                 var chunk = rawChunk.Trim();
 
-                // Séparation principale : quantité + nom du robot
+                // Sï¿½paration principale : quantitï¿½ + nom du robot
                 var matchMain = Regex.Match(chunk, @"^(\d+)\s+([A-Za-z0-9\-]+)");
                 if (!matchMain.Success)
                 {
@@ -101,11 +103,10 @@ namespace RobotFactory.Utils {
                     int.TryParse(fromParts[0], out int qty) &&
                     int.TryParse(toParts[0], out int qtyToReplace))
                 {
-                    // On prend le min entre les deux quantités, ou on pourrait aussi le répéter plusieurs fois
+                    // On prend le min entre les deux quantitï¿½s, ou on pourrait aussi le rï¿½pï¿½ter plusieurs fois
                     list.Add((Math.Min(qty, qtyToReplace), fromParts[1].Trim(), toParts[1].Trim()));
                 }
             }
         }
     }
 }
-

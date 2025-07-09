@@ -1,5 +1,5 @@
-using RobotFactory.Models;
 using RobotFactory.Builder;
+using RobotFactory.Models;
 
 namespace RobotFactory.Services
 {
@@ -37,6 +37,7 @@ namespace RobotFactory.Services
             { "Legs_LM1", "M" }, { "Legs_LD1", "D" }, { "Legs_LI1", "I" },
             { "System_SB1", "G" }, { "System_SM1", "M" }, { "System_SD1", "D" }, { "System_SI1", "I" }
         };
+
         private void InitializeStock()
         {
             _pieceStock = new Dictionary<string, int>
@@ -56,7 +57,7 @@ namespace RobotFactory.Services
 
         private void InitializeRobots()
         {
-            var factory = new RobotFactory.Factory.Factory();
+            var factory = new Factory.Factory();
             _robotTemplates = new Dictionary<string, Robot>
             {
                 { "XM-1", factory.CreateRobot("XM-1") },
@@ -64,6 +65,7 @@ namespace RobotFactory.Services
                 { "WI-1", factory.CreateRobot("WI-1") }
             };
         }
+
         public static void ResetStocks()
         {
             if (_instance != null)
@@ -103,11 +105,13 @@ namespace RobotFactory.Services
                         error = $"Système `{piece}` incompatible avec robot domestique `{robotName}`";
                         return false;
                     }
+
                     if (category == "I" && !(pieceCat is "I" or "G"))
                     {
                         error = $"Système `{piece}` incompatible avec robot industriel `{robotName}`";
                         return false;
                     }
+
                     if (category == "M" && !(pieceCat is "M" or "G"))
                     {
                         error = $"Système `{piece}` incompatible avec robot militaire `{robotName}`";
@@ -121,11 +125,13 @@ namespace RobotFactory.Services
                         error = $"Pièce `{piece}` incompatible avec robot domestique `{robotName}`";
                         return false;
                     }
+
                     if (category == "I" && !(pieceCat is "I" or "G"))
                     {
                         error = $"Pièce `{piece}` incompatible avec robot industriel `{robotName}`";
                         return false;
                     }
+
                     if (category == "M" && !(pieceCat is "M" or "I"))
                     {
                         error = $"Pièce `{piece}` incompatible avec robot militaire `{robotName}`";
@@ -200,6 +206,7 @@ namespace RobotFactory.Services
             foreach (var (pieceName, quantityPiece) in totalPiecesNeeded)
                 Console.WriteLine($"{quantityPiece} {pieceName}");
         }
+
         public void DisplayInstructions(List<ParsedRobotOrder> robotOrders)
         {
             foreach (var order in robotOrders)
@@ -285,6 +292,7 @@ namespace RobotFactory.Services
 
             Console.WriteLine("AVAILABLE");
         }
+
         public void Produce(List<ParsedRobotOrder> robotOrders)
         {
             var totalNeeded = new Dictionary<string, int>();
@@ -375,6 +383,5 @@ namespace RobotFactory.Services
 
             return pieces;
         }
-
     }
 }

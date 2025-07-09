@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Moq;
 using RobotFactory.Models;
 using RobotFactory.Services;
-using System.Collections.Generic;
 
 namespace RobotFactoryTests.Services
 {
@@ -95,9 +93,8 @@ namespace RobotFactoryTests.Services
 
             // Assert
             bool containsStockUpdated = output.Contains("STOCK_UPDATED");
-            Assert.IsTrue(containsStockUpdated, $"La sortie console attendue 'STOCK_UPDATED' est absente.\nSortie actuelle :\n{output}");
+            Assert.IsTrue(containsStockUpdated,
+                $"La sortie console attendue 'STOCK_UPDATED' est absente.\nSortie actuelle :\n{output}");
         }
-
-
     }
 }
