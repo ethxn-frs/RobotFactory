@@ -3,7 +3,6 @@ using RobotFactory.Utils;
 
 namespace RobotFactory
 {
-
     internal class Program
     {
         static void Main(string[] args)
@@ -12,6 +11,7 @@ namespace RobotFactory
 
             Console.WriteLine("Bienvenue dans RobotFactory !");
             Console.WriteLine("Entrez vos commandes (STOCKS, NEEDED_STOCKS, INSTRUCTIONS, VERIFY, PRODUCE)");
+            Console.WriteLine("Vous pouvez tester le parser avancé avec : TEST_PARSE ARGS");
 
             while (true)
             {
@@ -23,11 +23,12 @@ namespace RobotFactory
 
                 string command = input.Split(' ')[0].ToUpper();
                 string arguments = input.Length > command.Length ? input.Substring(command.Length).Trim() : "";
+
+                // Ancien parser pour les commandes simples
                 var parsedArguments = Parser.ParseArguments(arguments);
 
-                if(parsedArguments.Count == 0 && command != "STOCKS") {
+                if (parsedArguments.Count == 0 && command != "STOCKS")
                     continue;
-                }
 
                 switch (command)
                 {
@@ -38,13 +39,13 @@ namespace RobotFactory
                         stockManager.DisplayNeededPieces(parsedArguments);
                         break;
                     case "INSTRUCTIONS":
-                        stockManager.DisplayInstructions(parsedArguments);
+                        stockManager.DisplayInstructions(Parser.ParseComplexArguments(arguments));
                         break;
                     case "VERIFY":
-                        stockManager.VerifyOrder(parsedArguments);
+                        stockManager.VerifyOrder(Parser.ParseComplexArguments(arguments));
                         break;
                     case "PRODUCE":
-                        stockManager.Produce(parsedArguments);
+                        stockManager.Produce(Parser.ParseComplexArguments(arguments));
                         break;
                     default:
                         Console.WriteLine("Commande inconnue !");

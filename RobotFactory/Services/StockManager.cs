@@ -29,6 +29,14 @@ namespace RobotFactory.Services
             InitializeRobots();
         }
 
+        private Dictionary<string, string> _pieceCategories = new()
+        {
+            { "Core_CM1", "M" }, { "Core_CD1", "D" }, { "Core_CI1", "I" },
+            { "Generator_GM1", "M" }, { "Generator_GD1", "D" }, { "Generator_GI1", "I" },
+            { "Arms_AM1", "M" }, { "Arms_AD1", "D" }, { "Arms_AI1", "I" },
+            { "Legs_LM1", "M" }, { "Legs_LD1", "D" }, { "Legs_LI1", "I" },
+            { "System_SB1", "G" }, { "System_SM1", "M" }, { "System_SD1", "D" }, { "System_SI1", "I" }
+        };
         private void InitializeStock()
         {
             _pieceStock = new Dictionary<string, int>
@@ -55,6 +63,78 @@ namespace RobotFactory.Services
                 { "RD-1", factory.CreateRobot("RD-1") },
                 { "WI-1", factory.CreateRobot("WI-1") }
             };
+        }
+        public static void ResetStocks()
+        {
+            if (_instance != null)
+            {
+                _instance.InitializeStock();
+                _instance.InitializeRobots();
+            }
+        }
+
+        private bool ValidatePieceCategories(string robotName, List<string> pieces, out string error)
+        {
+            error = "";
+
+            if (!_robotTemplates.ContainsKey(robotName))
+            {
+                error = $"Robot `{robotName}` non reconnu";
+                return false;
+            }
+
+            var robot = _robotTemplates[robotName];
+            var category = robot.Category;
+
+            foreach (var piece in pieces)
+            {
+                if (!_pieceCategories.ContainsKey(piece))
+                {
+                    error = $"Pièce `{piece}` inconnue";
+                    return false;
+                }
+
+                var pieceCat = _pieceCategories[piece];
+
+                if (piece.StartsWith("System_"))
+                {
+                    if (category == "D" && !(pieceCat is "D" or "G"))
+                    {
+                        error = $"Système `{piece}` incompatible avec robot domestique `{robotName}`";
+                        return false;
+                    }
+                    if (category == "I" && !(pieceCat is "I" or "G"))
+                    {
+                        error = $"Système `{piece}` incompatible avec robot industriel `{robotName}`";
+                        return false;
+                    }
+                    if (category == "M" && !(pieceCat is "M" or "G"))
+                    {
+                        error = $"Système `{piece}` incompatible avec robot militaire `{robotName}`";
+                        return false;
+                    }
+                }
+                else // Pièces classiques
+                {
+                    if (category == "D" && !(pieceCat is "D" or "I" or "G"))
+                    {
+                        error = $"Pièce `{piece}` incompatible avec robot domestique `{robotName}`";
+                        return false;
+                    }
+                    if (category == "I" && !(pieceCat is "I" or "G"))
+                    {
+                        error = $"Pièce `{piece}` incompatible avec robot industriel `{robotName}`";
+                        return false;
+                    }
+                    if (category == "M" && !(pieceCat is "M" or "I"))
+                    {
+                        error = $"Pièce `{piece}` incompatible avec robot militaire `{robotName}`";
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public void DisplayStocks()
@@ -120,26 +200,32 @@ namespace RobotFactory.Services
             foreach (var (pieceName, quantityPiece) in totalPiecesNeeded)
                 Console.WriteLine($"{quantityPiece} {pieceName}");
         }
-
-        public void DisplayInstructions(Dictionary<string, int> requestedRobots)
+        public void DisplayInstructions(List<ParsedRobotOrder> robotOrders)
         {
-            foreach (var (robotName, quantity) in requestedRobots)
+            foreach (var order in robotOrders)
             {
-                if (!_robotTemplates.ContainsKey(robotName))
+                if (!_robotTemplates.ContainsKey(order.RobotName))
                 {
-                    Console.WriteLine($"ERROR `{robotName}` is not a recognized robot");
-                    return;
+                    Console.WriteLine($"ERROR `{order.RobotName}` is not a recognized robot");
+                    continue;
                 }
 
-                for (int i = 0; i < quantity; i++)
+                var pieces = GetModifiedRobotPieces(order);
+
+                if (!ValidatePieceCategories(order.RobotName, pieces, out var error))
                 {
-                    var robot = _robotTemplates[robotName];
+                    Console.WriteLine($"ERROR {error}");
+                    continue;
+                }
+
+                for (int i = 0; i < order.Quantity; i++)
+                {
                     var builder = new RobotAssemblyBuilder();
-                    builder.Start(robot.Name);
+                    builder.Start(order.RobotName);
 
                     string? core = null, generator = null, arms = null, legs = null, system = null;
 
-                    foreach (var piece in robot.RequiredPieces)
+                    foreach (var piece in pieces)
                     {
                         builder.AddGetOutStock(piece);
                         if (piece.StartsWith("Core_")) core = piece;
@@ -154,38 +240,43 @@ namespace RobotFactory.Services
                     if (arms != null) builder.AddAssemble(arms);
                     if (legs != null) builder.AddAssemble(legs);
 
-                    builder.Finish(robot.Name);
+                    builder.Finish(order.RobotName);
                     foreach (var instruction in builder.Build())
                         Console.WriteLine(instruction);
                 }
             }
         }
 
-        public void VerifyOrder(Dictionary<string, int> requestedRobots)
+        public void VerifyOrder(List<ParsedRobotOrder> robotOrders)
         {
-            var totalPiecesNeeded = new Dictionary<string, int>();
+            var totalNeeded = new Dictionary<string, int>();
 
-            foreach (var (robotName, quantity) in requestedRobots)
+            foreach (var order in robotOrders)
             {
-                if (!_robotTemplates.ContainsKey(robotName))
+                if (!_robotTemplates.ContainsKey(order.RobotName))
                 {
-                    Console.WriteLine($"ERROR `{robotName}` is not a recognized robot");
+                    Console.WriteLine($"ERROR `{order.RobotName}` is not a recognized robot");
                     return;
                 }
 
-                var robot = _robotTemplates[robotName];
-                foreach (var piece in robot.RequiredPieces)
-                {
-                    if (!totalPiecesNeeded.ContainsKey(piece))
-                        totalPiecesNeeded[piece] = 0;
+                var pieces = GetModifiedRobotPieces(order);
 
-                    totalPiecesNeeded[piece] += quantity;
+                if (!ValidatePieceCategories(order.RobotName, pieces, out var error))
+                {
+                    Console.WriteLine($"ERROR {error}");
+                    return;
+                }
+
+                foreach (var piece in pieces)
+                {
+                    if (!totalNeeded.ContainsKey(piece)) totalNeeded[piece] = 0;
+                    totalNeeded[piece] += order.Quantity;
                 }
             }
 
-            foreach (var (pieceName, quantityNeeded) in totalPiecesNeeded)
+            foreach (var (piece, needed) in totalNeeded)
             {
-                if (!_pieceStock.ContainsKey(pieceName) || _pieceStock[pieceName] < quantityNeeded)
+                if (!_pieceStock.ContainsKey(piece) || _pieceStock[piece] < needed)
                 {
                     Console.WriteLine("UNAVAILABLE");
                     return;
@@ -194,45 +285,96 @@ namespace RobotFactory.Services
 
             Console.WriteLine("AVAILABLE");
         }
-
-        public void Produce(Dictionary<string, int> requestedRobots)
+        public void Produce(List<ParsedRobotOrder> robotOrders)
         {
-            var totalPiecesNeeded = new Dictionary<string, int>();
+            var totalNeeded = new Dictionary<string, int>();
 
-            foreach (var (robotName, quantity) in requestedRobots)
+            foreach (var order in robotOrders)
             {
-                if (!_robotTemplates.ContainsKey(robotName))
+                if (!_robotTemplates.ContainsKey(order.RobotName))
                 {
-                    Console.WriteLine($"ERROR `{robotName}` is not a recognized robot");
+                    Console.WriteLine($"ERROR `{order.RobotName}` is not a recognized robot");
                     return;
                 }
 
-                var robot = _robotTemplates[robotName];
-                foreach (var piece in robot.RequiredPieces)
-                {
-                    if (!totalPiecesNeeded.ContainsKey(piece))
-                        totalPiecesNeeded[piece] = 0;
+                var pieces = GetModifiedRobotPieces(order);
 
-                    totalPiecesNeeded[piece] += quantity;
+                if (!ValidatePieceCategories(order.RobotName, pieces, out var error))
+                {
+                    Console.WriteLine($"ERROR {error}");
+                    return;
+                }
+
+                foreach (var piece in pieces)
+                {
+                    if (!totalNeeded.ContainsKey(piece)) totalNeeded[piece] = 0;
+                    totalNeeded[piece] += order.Quantity;
                 }
             }
 
-            foreach (var (pieceName, quantityNeeded) in totalPiecesNeeded)
+            // Vérifie le stock
+            foreach (var (piece, needed) in totalNeeded)
             {
-                if (!_pieceStock.ContainsKey(pieceName) || _pieceStock[pieceName] < quantityNeeded)
+                if (!_pieceStock.ContainsKey(piece) || _pieceStock[piece] < needed)
                 {
                     Console.WriteLine("ERROR Not enough stock to produce the requested robots.");
                     return;
                 }
             }
 
-            foreach (var (pieceName, quantityNeeded) in totalPiecesNeeded)
-                _pieceStock[pieceName] -= quantityNeeded;
+            // Mise à jour du stock
+            foreach (var (piece, needed) in totalNeeded)
+                _pieceStock[piece] -= needed;
 
-            foreach (var (robotName, quantity) in requestedRobots)
-                _robotStock[robotName] += quantity;
+            foreach (var order in robotOrders)
+            {
+                if (_robotStock.ContainsKey(order.RobotName))
+                    _robotStock[order.RobotName] += order.Quantity;
+                else
+                    _robotStock[order.RobotName] = order.Quantity;
+            }
 
             Console.WriteLine("STOCK_UPDATED");
         }
+
+
+        private List<string> GetModifiedRobotPieces(ParsedRobotOrder order)
+        {
+            if (!_robotTemplates.TryGetValue(order.RobotName, out var baseRobot))
+                throw new ArgumentException($"Robot inconnu : {order.RobotName}");
+
+            // Copier les pièces de base
+            var pieces = new List<string>(baseRobot.RequiredPieces);
+
+            // WITHOUT : suppression
+            foreach (var (qty, piece) in order.WithoutPieces)
+            {
+                for (int i = 0; i < qty; i++)
+                    pieces.Remove(piece);
+            }
+
+            // REPLACE : suppression et ajout
+            foreach (var (qty, fromPiece, toPiece) in order.ReplacePieces)
+            {
+                for (int i = 0; i < qty; i++)
+                {
+                    if (pieces.Contains(fromPiece))
+                    {
+                        pieces.Remove(fromPiece);
+                        pieces.Add(toPiece);
+                    }
+                }
+            }
+
+            // WITH : ajout
+            foreach (var (qty, piece) in order.WithPieces)
+            {
+                for (int i = 0; i < qty; i++)
+                    pieces.Add(piece);
+            }
+
+            return pieces;
+        }
+
     }
 }
