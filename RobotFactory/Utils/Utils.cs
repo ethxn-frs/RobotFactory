@@ -47,7 +47,6 @@ namespace RobotFactory.Utils
             {
                 var chunk = rawChunk.Trim();
 
-                // S�paration principale : quantit� + nom du robot
                 var matchMain = Regex.Match(chunk, @"^(\d+)\s+([A-Za-z0-9\-]+)");
                 if (!matchMain.Success)
                 {
@@ -61,7 +60,6 @@ namespace RobotFactory.Utils
                     RobotName = matchMain.Groups[2].Value.ToUpper()
                 };
 
-                // Gestion des WITH, WITHOUT, REPLACE
                 ParseModifier(chunk, "WITH", parsed.WithPieces);
                 ParseModifier(chunk, "WITHOUT", parsed.WithoutPieces);
                 ParseReplaceModifier(chunk, parsed.ReplacePieces);
@@ -74,7 +72,11 @@ namespace RobotFactory.Utils
 
         private static void ParseModifier(string chunk, string modifier, List<(int, string)> list)
         {
-            var match = Regex.Match(chunk, @$"{modifier}\s+([0-9A-Za-z ,_-]+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(
+                chunk,
+                @$"{modifier}\s+((?:\d+\s+[A-Za-z0-9_-]+(?:,\s*)?)*)",
+                RegexOptions.IgnoreCase);
+
             if (!match.Success) return;
 
             var args = match.Groups[1].Value.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -90,7 +92,11 @@ namespace RobotFactory.Utils
 
         private static void ParseReplaceModifier(string chunk, List<(int, string, string)> list)
         {
-            var match = Regex.Match(chunk, @"REPLACE\s+([0-9A-Za-z ,_-]+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(
+                chunk,
+                @"REPLACE\s+((?:\d+\s+[A-Za-z0-9_-]+(?:,\s*)?)*)",
+                RegexOptions.IgnoreCase);
+
             if (!match.Success) return;
 
             var args = match.Groups[1].Value.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -103,7 +109,6 @@ namespace RobotFactory.Utils
                     int.TryParse(fromParts[0], out int qty) &&
                     int.TryParse(toParts[0], out int qtyToReplace))
                 {
-                    // On prend le min entre les deux quantit�s, ou on pourrait aussi le r�p�ter plusieurs fois
                     list.Add((Math.Min(qty, qtyToReplace), fromParts[1].Trim(), toParts[1].Trim()));
                 }
             }
