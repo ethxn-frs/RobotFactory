@@ -6,17 +6,41 @@ namespace RobotFactory.Services
     public class StockManager : IStockManager
     {
         private static StockManager? _instance;
+        private static readonly object _lock = new();
+
         private readonly IRobotService _robotService;
 
         private Dictionary<string, int> _pieceStock = new();
         private Dictionary<string, int> _robotStock = new();
 
-        public StockManager(IRobotService robotService)
+        private StockManager(IRobotService robotService)
         {
             _robotService = robotService;
             InitializeStock();
         }
-        
+
+        public static void Initialize(IRobotService robotService)
+        {
+            lock (_lock)
+            {
+                if (_instance == null)
+                    _instance = new StockManager(robotService);
+            }
+        }
+
+        public static StockManager Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                        throw new InvalidOperationException("StockManager not initialized. Call Initialize() first.");
+                    return _instance;
+                }
+            }
+        }
+
         private void InitializeStock()
         {
             _pieceStock = new Dictionary<string, int>

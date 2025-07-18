@@ -1,6 +1,4 @@
-﻿using Moq;
-using RobotFactory.Models;
-using RobotFactory.Services;
+﻿using RobotFactory.Services;
 using RobotFactory.Services.Impl;
 
 namespace RobotFactoryTests.Services
@@ -8,94 +6,91 @@ namespace RobotFactoryTests.Services
     [TestClass]
     public class StockManagerTests
     {
-        private Mock<IStockManager>? _mock;
         private IStockManager? _stockManager;
 
         [TestInitialize]
         public void Setup()
         {
-            _mock = new Mock<IStockManager>();
-            _stockManager = _mock.Object;
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            _mock?.Reset();
+            IRobotService robotService = new RobotService();
+            StockManager.Initialize(robotService);
+            _stockManager = StockManager.Instance;
         }
 
         [TestMethod]
-        public void DisplayStocks_ShouldCallMethod()
+        public void DisplayStocks_ShouldPrintExpectedOutput()
         {
-            _stockManager?.DisplayStocks();
-            _mock?.Verify(m => m.DisplayStocks(), Times.Once);
-        }
-
-        [TestMethod]
-        public void VerifyOrder_ShouldCallMethodWithCorrectArgument()
-        {
-            var input = new List<ParsedRobotOrder>
-            {
-                new ParsedRobotOrder { Quantity = 1, RobotName = "XM-1" }
-            };
-
-            _stockManager?.VerifyOrder(input);
-            _mock?.Verify(m => m.VerifyOrder(input), Times.Once);
-        }
-
-        [TestMethod]
-        public void Produce_ShouldCallMethodWithCorrectArgument()
-        {
-            var input = new List<ParsedRobotOrder>
-            {
-                new ParsedRobotOrder { Quantity = 2, RobotName = "RD-1" }
-            };
-
-            _stockManager?.Produce(input);
-            _mock?.Verify(m => m.Produce(input), Times.Once);
-        }
-
-        [TestMethod]
-        public void DisplayNeededPieces_ShouldCallMethodWithCorrectArgument()
-        {
-            var input = new Dictionary<string, int> { { "WI-1", 3 } };
-
-            _stockManager?.DisplayNeededPieces(input);
-            _mock?.Verify(m => m.DisplayNeededPieces(input), Times.Once);
-        }
-
-        [TestMethod]
-        public void DisplayInstructions_ShouldCallMethodWithCorrectArgument()
-        {
-            var input = new List<ParsedRobotOrder>
-            {
-                new ParsedRobotOrder { Quantity = 1, RobotName = "XM-1" }
-            };
-
-            _stockManager?.DisplayInstructions(input);
-            _mock?.Verify(m => m.DisplayInstructions(input), Times.Once);
-        }
-
-        [TestMethod]
-        public void Produce_ShouldPrintStockUpdated_WhenEnoughStock()
-        {
-            // Arrange
-            var stockManager = new StockManager();
-            var input = new List<ParsedRobotOrder>
-            {
-                new ParsedRobotOrder { Quantity = 1, RobotName = "XM-1" }
-            };
             using var sw = new StringWriter();
             Console.SetOut(sw);
 
-            // Act
-            stockManager.Produce(input);
+            _stockManager!.DisplayStocks();
             var output = sw.ToString();
 
-            // Assert
-            bool containsStockUpdated = output.Contains("STOCK_UPDATED");
-            Assert.IsTrue(containsStockUpdated,
-                $"La sortie console attendue 'STOCK_UPDATED' est absente.\nSortie actuelle :\n{output}");
+            Assert.IsTrue(output.Contains("Robots disponibles"));
+            Assert.IsTrue(output.Contains("Pièces disponibles"));
+        }
+
+        [TestMethod]
+        public void DisplayNeededPieces_ShouldPrintCorrectLines()
+        {
+            var robots = new Dictionary<string, int> { { "WI-1", 1 } };
+
+            using var sw = new StringWriter();
+            Console.SetOut(sw);
+
+            _stockManager!.DisplayNeededPieces(robots);
+            var output = sw.ToString();
+
+            Assert.IsTrue(output.Contains("Pièces nécessaires"), "Missing 'Pièces nécessaires' section.");
+            Assert.IsTrue(output.Contains("WI-1"), "Missing robot name in output.");
+        }
+
+        [TestMethod]
+        public void IsAvailable_ShouldReturnTrue_WhenStockIsSufficient()
+        {
+            var needed = new Dictionary<string, int>
+            {
+                { "Core_CM1", 1 },
+                { "Generator_GM1", 1 },
+                { "Arms_AM1", 1 },
+                { "Legs_LM1", 1 },
+                { "System_SB1", 1 }
+            };
+
+            var result = _stockManager!.IsAvailable(needed);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Consume_ShouldReduceStockCorrectly()
+        {
+            var needed = new Dictionary<string, int>
+            {
+                { "Core_CM1", 1 },
+                { "Generator_GM1", 1 }
+            };
+
+            _stockManager!.Consume(needed);
+
+            using var sw = new StringWriter();
+            Console.SetOut(sw);
+            _stockManager.DisplayStocks();
+            var output = sw.ToString();
+
+            Assert.IsTrue(output.Contains("9 Core_CM1"));
+            Assert.IsTrue(output.Contains("9 Generator_GM1"));
+        }
+
+        [TestMethod]
+        public void AddRobots_ShouldIncreaseRobotStock()
+        {
+            _stockManager!.AddRobots("XM-1", 3);
+
+            using var sw = new StringWriter();
+            Console.SetOut(sw);
+            _stockManager.DisplayStocks();
+            var output = sw.ToString();
+
+            Assert.IsTrue(output.Contains("3 XM-1"));
         }
     }
 }

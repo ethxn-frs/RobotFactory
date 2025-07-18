@@ -1,4 +1,4 @@
-using RobotFactory.Builder;
+using RobotFactory.Models;
 using RobotFactory.Services.Impl;
 
 namespace RobotFactory.Services
@@ -7,28 +7,54 @@ namespace RobotFactory.Services
     {
         public List<string> GenerateInstructions(string robotName, List<string> pieces)
         {
-            var builder = new RobotAssemblyBuilder();
-            builder.Start(robotName);
+            Piece? core = null, generator = null, arms = null, legs = null, system = null;
 
-            string? core = null, generator = null, arms = null, legs = null, system = null;
-
+            var components = new List<IAssemblyComponent>();
             foreach (var piece in pieces)
             {
-                builder.AddGetOutStock(piece);
-                if (piece.StartsWith("Core_")) core = piece;
-                else if (piece.StartsWith("Generator_")) generator = piece;
-                else if (piece.StartsWith("Arms_")) arms = piece;
-                else if (piece.StartsWith("Legs_")) legs = piece;
-                else if (piece.StartsWith("System_")) system = piece;
+                var p = new Piece(piece);
+                if (piece.StartsWith("Core_")) core = p;
+                else if (piece.StartsWith("Generator_")) generator = p;
+                else if (piece.StartsWith("Arms_")) arms = p;
+                else if (piece.StartsWith("Legs_")) legs = p;
+                else if (piece.StartsWith("System_")) system = p;
+                else components.Add(p);
             }
 
-            if (core != null && system != null) builder.AddInstall(system, core);
-            if (core != null && generator != null) builder.AddAssemble(core, generator);
-            if (arms != null) builder.AddAssemble(arms);
-            if (legs != null) builder.AddAssemble(legs);
+            if (core != null) components.Add(core);
+            if (generator != null) components.Add(generator);
+            if (arms != null) components.Add(arms);
+            if (legs != null) components.Add(legs);
 
-            builder.Finish(robotName);
-            return builder.Build();
+            IAssemblyComponent? current = core;
+            if (generator != null && current != null)
+                current = new Assembly(current, generator);
+            if (arms != null && current != null)
+                current = new Assembly(current, arms);
+            if (legs != null && current != null)
+                current = new Assembly(current, legs);
+
+            var instructions = new List<string>
+            {
+                $"PRODUCING {robotName}"
+            };
+
+            if (system != null && core != null)
+            {
+                instructions.AddRange(system.ToInstructions());
+                instructions.Add($"INSTALL {system.GetName()} {core.GetName()}");
+            }
+
+            if (current != null)
+                instructions.AddRange(current.ToInstructions());
+
+            instructions.Add($"FINISHED {robotName}");
+            Console.WriteLine("Structure d'assemblage :");
+            Console.WriteLine("");
+            current?.Print();
+            Console.WriteLine("");
+            Assembly.ResetCounter();
+            return instructions;
         }
     }
 }

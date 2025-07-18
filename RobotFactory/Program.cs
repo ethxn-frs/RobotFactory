@@ -9,7 +9,8 @@ namespace RobotFactory
         static void Main(string[] args)
         {
             IRobotService robotService = new RobotService();
-            IStockManager stockManager = new StockManager(robotService);
+            StockManager.Initialize(robotService);
+            IStockManager stockManager = StockManager.Instance;
             IInstructionService instructionService = new InstructionService();
             IOrderService orderService = new OrderService(robotService, instructionService, stockManager);
 
