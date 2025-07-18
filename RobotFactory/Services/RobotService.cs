@@ -113,5 +113,44 @@ namespace RobotFactory.Services
 
             return true;
         }
+
+        public void AddTemplate(string name, List<string> pieces)
+        {
+            if (_robotTemplates.ContainsKey(name))
+            {
+                Console.WriteLine($"ERROR Template déjà existant : {name}");
+                return;
+            }
+
+            if (pieces.Count == 0)
+            {
+                Console.WriteLine("ERROR Aucun composant fourni.");
+                return;
+            }
+
+            // Vérifie que toutes les pièces sont connues
+            foreach (var piece in pieces)
+            {
+                if (!_pieceCategories.ContainsKey(piece))
+                {
+                    Console.WriteLine($"ERROR Pièce inconnue : {piece}");
+                    return;
+                }
+            }
+
+            // Trouve la catégorie à partir du Core
+            var corePiece = pieces.FirstOrDefault(p => p.StartsWith("Core_"));
+            if (corePiece == null)
+            {
+                Console.WriteLine("ERROR Aucun Core_ trouvé pour déterminer la catégorie.");
+                return;
+            }
+
+            var category = _pieceCategories[corePiece];
+            var robot = new Robot(name, pieces, category);
+            _robotTemplates[name] = robot;
+
+            Console.WriteLine($"TEMPLATE {name} ajouté avec succès.");
+        }
     }
 }

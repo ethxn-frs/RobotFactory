@@ -61,7 +61,7 @@ namespace RobotFactoryTests.Models.Composite
             var a1 = new Assembly(new Piece("A"), new Piece("B"));
             var firstTMP = a1.GetName();
 
-            Assembly.ResetCounter(); // reset le compteur TMP
+            Assembly.ResetCounter();
 
             var a2 = new Assembly(new Piece("C"), new Piece("D"));
             var secondTMP = a2.GetName();

@@ -7,53 +7,53 @@ namespace RobotFactory.Services
     {
         public List<string> GenerateInstructions(string robotName, List<string> pieces)
         {
-            Piece? core = null, generator = null, arms = null, legs = null, system = null;
+            var pieceMap = new Dictionary<string, Piece>();
+            Piece? system = null;
 
-            var components = new List<IAssemblyComponent>();
-            foreach (var piece in pieces)
+            foreach (var name in pieces)
             {
-                var p = new Piece(piece);
-                if (piece.StartsWith("Core_")) core = p;
-                else if (piece.StartsWith("Generator_")) generator = p;
-                else if (piece.StartsWith("Arms_")) arms = p;
-                else if (piece.StartsWith("Legs_")) legs = p;
-                else if (piece.StartsWith("System_")) system = p;
-                else components.Add(p);
+                var p = new Piece(name);
+                if (name.StartsWith("System_"))
+                {
+                    system = p;
+                }
+                else
+                {
+                    var key = name.Split('_')[0]; // "Core", "Generator", etc.
+                    pieceMap[key] = p;
+                }
             }
 
-            if (core != null) components.Add(core);
-            if (generator != null) components.Add(generator);
-            if (arms != null) components.Add(arms);
-            if (legs != null) components.Add(legs);
+            // Construction de l'arbre d'assemblage
+            IAssemblyComponent? current = pieceMap.GetValueOrDefault("Core");
 
-            IAssemblyComponent? current = core;
-            if (generator != null && current != null)
-                current = new Assembly(current, generator);
-            if (arms != null && current != null)
-                current = new Assembly(current, arms);
-            if (legs != null && current != null)
-                current = new Assembly(current, legs);
-
-            var instructions = new List<string>
+            foreach (var type in new[] { "Generator", "Arms", "Legs" })
             {
-                $"PRODUCING {robotName}"
-            };
+                if (pieceMap.TryGetValue(type, out var p) && current != null)
+                {
+                    current = new Assembly(current, p);
+                }
+            }
 
-            if (system != null && core != null)
+            // Génération des instructions
+            var instructions = new List<string> { $"PRODUCING {robotName}" };
+
+            if (system is not null && pieceMap.TryGetValue("Core", out var core))
             {
                 instructions.AddRange(system.ToInstructions());
                 instructions.Add($"INSTALL {system.GetName()} {core.GetName()}");
             }
 
-            if (current != null)
+            if (current is not null)
                 instructions.AddRange(current.ToInstructions());
 
             instructions.Add($"FINISHED {robotName}");
-            Console.WriteLine("Structure d'assemblage :");
-            Console.WriteLine("");
+
+            Console.WriteLine("Structure d'assemblage :\n");
             current?.Print();
-            Console.WriteLine("");
+            Console.WriteLine();
             Assembly.ResetCounter();
+
             return instructions;
         }
     }

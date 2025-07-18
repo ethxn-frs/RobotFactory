@@ -143,5 +143,20 @@ namespace RobotFactory.Services
             if (_robotStock.ContainsKey(name)) _robotStock[name] += qty;
             else _robotStock[name] = qty;
         }
+
+        public void ResetStock()
+        {
+            InitializeStock();
+        }
+
+#if DEBUG
+        public static void ResetSingleton()
+        {
+            lock (_lock)
+            {
+                _instance = null;
+            }
+        }
+#endif
     }
 }

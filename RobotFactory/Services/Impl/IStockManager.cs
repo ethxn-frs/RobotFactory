@@ -9,6 +9,6 @@ namespace RobotFactory.Services.Impl
         bool IsAvailable(Dictionary<string, int> needed);
         void Consume(Dictionary<string, int> needed);
         void AddRobots(string robotName, int qty);
-
+        void ResetStock();
     }
 }

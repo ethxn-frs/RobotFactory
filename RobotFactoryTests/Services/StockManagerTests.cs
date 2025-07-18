@@ -14,6 +14,22 @@ namespace RobotFactoryTests.Services
             IRobotService robotService = new RobotService();
             StockManager.Initialize(robotService);
             _stockManager = StockManager.Instance;
+#if DEBUG
+            StockManager.ResetSingleton();
+#endif
+        }
+
+        private string CaptureConsoleOutput(Action action)
+        {
+            var originalOut = Console.Out;
+            using var sw = new StringWriter();
+            Console.SetOut(sw);
+
+            action();
+
+            Console.Out.Flush();
+            Console.SetOut(originalOut);
+            return sw.ToString();
         }
 
         [TestMethod]
@@ -34,15 +50,12 @@ namespace RobotFactoryTests.Services
         {
             var robots = new Dictionary<string, int> { { "WI-1", 1 } };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _stockManager!.DisplayNeededPieces(robots);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _stockManager!.DisplayNeededPieces(robots); });
 
             Assert.IsTrue(output.Contains("Pièces nécessaires"), "Missing 'Pièces nécessaires' section.");
             Assert.IsTrue(output.Contains("WI-1"), "Missing robot name in output.");
         }
+
 
         [TestMethod]
         public void IsAvailable_ShouldReturnTrue_WhenStockIsSufficient()

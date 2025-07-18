@@ -15,11 +15,27 @@ namespace RobotFactoryTests.Services
         [TestInitialize]
         public void Setup()
         {
+#if DEBUG
+            StockManager.ResetSingleton();
+#endif
             _robotService = new RobotService();
             StockManager.Initialize(_robotService);
             _stockManager = StockManager.Instance;
             _instructionService = new InstructionService();
             _orderService = new OrderService(_robotService, _instructionService, _stockManager);
+        }
+
+
+        private string CaptureConsoleOutput(Action action)
+        {
+            var originalOut = Console.Out;
+            var sw = new StringWriter();
+            Console.SetOut(sw);
+
+            action();
+
+            Console.SetOut(originalOut);
+            return sw.ToString();
         }
 
         [TestMethod]
@@ -30,11 +46,7 @@ namespace RobotFactoryTests.Services
                 new ParsedRobotOrder { Quantity = 1, RobotName = "XM-1" }
             };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _orderService.DisplayInstructions(input);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _orderService.DisplayInstructions(input); });
 
             Assert.IsTrue(output.Contains("PRODUCING XM-1"));
             Assert.IsTrue(output.Contains("FINISHED XM-1"));
@@ -48,11 +60,7 @@ namespace RobotFactoryTests.Services
                 new ParsedRobotOrder { Quantity = 1, RobotName = "RD-1" }
             };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _orderService.VerifyOrder(input);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _orderService.VerifyOrder(input); });
 
             Assert.IsTrue(output.Contains("AVAILABLE"));
         }
@@ -65,11 +73,7 @@ namespace RobotFactoryTests.Services
                 new ParsedRobotOrder { Quantity = 1, RobotName = "WI-1" }
             };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _orderService.Produce(input);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _orderService.Produce(input); });
 
             Assert.IsTrue(output.Contains("STOCK_UPDATED"));
         }
@@ -82,11 +86,7 @@ namespace RobotFactoryTests.Services
                 new ParsedRobotOrder { Quantity = 999, RobotName = "WI-1" }
             };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _orderService.Produce(input);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _orderService.Produce(input); });
 
             Assert.IsTrue(output.Contains("ERROR Not enough stock."));
         }
@@ -99,11 +99,7 @@ namespace RobotFactoryTests.Services
                 new ParsedRobotOrder { Quantity = 1, RobotName = "INVALID" }
             };
 
-            using var sw = new StringWriter();
-            Console.SetOut(sw);
-
-            _orderService.DisplayInstructions(input);
-            var output = sw.ToString();
+            var output = CaptureConsoleOutput(() => { _orderService.DisplayInstructions(input); });
 
             Assert.IsTrue(output.Contains("ERROR Robot inconnu"));
         }

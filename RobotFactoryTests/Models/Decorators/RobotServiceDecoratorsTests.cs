@@ -31,7 +31,7 @@ namespace RobotFactoryTests.Models.Decorators
 
             Assert.IsTrue(pieces.Contains("Extra_Piece1"));
             Assert.IsTrue(pieces.Contains("Extra_Piece2"));
-            Assert.IsTrue(pieces.Contains("Core_CM1")); // vérif pièce d’origine toujours là
+            Assert.IsTrue(pieces.Contains("Core_CM1"));
         }
 
         [TestMethod]
